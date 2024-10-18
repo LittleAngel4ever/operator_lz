@@ -2,25 +2,37 @@
 Посчитать количество итераций, необходимых для того, чтобы сумма членов ряда приблизилась к заданному числу
 '''
 
-# открываем файлы
+from decimal import Decimal as dec
+
 input_data = open('input_1.txt', 'r')
-output = open('output_1.txt', 'w')
 data = input_data.read()
 data = data.split()
-n = int(data[0])
 
-for i in range(2, 25000): # задаем i  из списка
+L = dec(data[0])     # изначальная сумма
+E = int(data[1])     # точность
+S = dec(data[2])     # искомая сумма
+count = 1            # количество     
+summ = 0             #переменные необходимые для решения
 
-    if n%i == 0 and i != n: # задаем условие для выполнения задачи
-        output.write(str('N')) # выводим полченный ответ
-        break # завершаем цикл, если условие выполнилось
+poi = S - L #число которое необходимо добавить к L, следовательно искомая сумма
+S = round(S, E)
+
+# поиск количества происходящих итераций
+while summ < poi:
+    summ += (1/ count**2)
+    count += 1
+    if S - L < 1:
+        count = 1
     
-    elif i == n: #если предыдущее условие не выполнилось задаем условие, при котором i равно заданному числу
-        output.write(str('Y')) # выводим полченный ответ
+else:
+    if summ - float(S) < float(S) - (summ - 1 / (count - 1)**2):
+        count = count - 1
+    count -= 1
 
-if n == 1: # условие, если заданное число равно 1
-    output.write(str('N')) # выводим полченный ответ 
+#вывод данных
+output_data = open('output_1.txt', 'w')
+output_data.write(str(count))
 
-# закрываем файлы
+#закрытие файлов 
 input_data.close()
-output.close()
+output_data.close()
